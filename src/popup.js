@@ -2,6 +2,10 @@ const statusEl = document.getElementById("status");
 const detailsEl = document.getElementById("details");
 const buttons = Array.from(document.querySelectorAll("button"));
 
+if (new URLSearchParams(location.search).get("embedded") === "1") {
+  document.body.classList.add("embedded");
+}
+
 function setStatus(text, isError = false) {
   statusEl.textContent = text;
   statusEl.classList.toggle("error", isError);
