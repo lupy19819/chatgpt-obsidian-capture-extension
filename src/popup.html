@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ChatGPT 当前对话归档</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <h1>ChatGPT 当前对话归档</h1>
+      <div id="status" class="status">正在读取当前页面...</div>
+      <dl id="details" hidden>
+        <dt>标题</dt>
+        <dd id="title">-</dd>
+        <dt>会话 ID</dt>
+        <dd id="conversation-id">-</dd>
+        <dt>状态</dt>
+        <dd id="dirty">-</dd>
+        <dt>当前页面消息数</dt>
+        <dd id="message-count">-</dd>
+        <dt>上次保存</dt>
+        <dd id="last-saved">-</dd>
+      </dl>
+      <div class="actions">
+        <button id="update" type="button">更新归档</button>
+        <button id="markdown" type="button">导出完整 Markdown</button>
+        <button id="json" type="button">导出完整 JSON</button>
+        <button id="choose-folder" type="button">选择归档文件夹</button>
+        <button id="clear" type="button" class="secondary">清除本会话归档状态</button>
+      </div>
+    </main>
+    <script src="file_access.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
