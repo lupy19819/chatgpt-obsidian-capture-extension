@@ -3,9 +3,11 @@
   window.__ChatGPTCaptureAutoWatcherReady = true;
 
   const STORAGE_KEY = "conversations";
+  const STARTUP_DELAY_MS = 35000;
   const INITIAL_DELAY_MS = 12000;
   const POLL_INTERVAL_MS = 30000;
-  const URL_WATCH_MS = 1000;
+  const URL_WATCH_MS = 5000;
+  let watcherStarted = false;
   let lastUrl = location.href;
   let lastSignature = "";
   let nextCheckAt = 0;
@@ -56,6 +58,10 @@
     chrome.runtime.sendMessage({ type: "SET_BADGE", count }, () => {});
   }
 
+  function shouldStayDormant() {
+    return !watcherStarted || document.visibilityState !== "visible";
+  }
+
   function getUi() {
     return document.getElementById("chatgpt-capture-lite-panel");
   }
@@ -72,6 +78,7 @@
   }
 
   function updateProgressRing() {
+    if (shouldStayDormant()) return;
     if (!isConversationPage()) {
       removeUi();
       return;
@@ -227,7 +234,7 @@
   }
 
   async function checkDirty(options = {}) {
-    if (running || document.visibilityState !== "visible" || !isConversationPage()) return;
+    if (shouldStayDormant() || running || !isConversationPage()) return;
     if (isGenerating()) {
       setStatus("回复生成中，稍后检查", "neutral");
       scheduleNextCheck();
@@ -272,6 +279,7 @@
   }
 
   function handleUrlChange() {
+    if (shouldStayDormant()) return;
     if (location.href === lastUrl) return;
     lastUrl = location.href;
     lastSignature = "";
@@ -303,6 +311,21 @@
     return false;
   });
 
+  function startWatcher() {
+    watcherStarted = true;
+    lastUrl = location.href;
+    if (isConversationPage()) {
+      scheduleNextCheck(INITIAL_DELAY_MS);
+      const idle = window.requestIdleCallback || ((callback) => setTimeout(callback, 2500));
+      idle(() => {
+        if (isConversationPage()) {
+          ensureUi();
+          setStatus("等待自动检查", "neutral");
+        }
+      }, { timeout: 8000 });
+    }
+  }
+
   setInterval(() => {
     handleUrlChange();
     updateProgressRing();
@@ -311,8 +334,5 @@
     }
   }, URL_WATCH_MS);
 
-  if (isConversationPage()) {
-    ensureUi();
-    scheduleNextCheck(INITIAL_DELAY_MS);
-  }
+  setTimeout(startWatcher, STARTUP_DELAY_MS);
 })();
