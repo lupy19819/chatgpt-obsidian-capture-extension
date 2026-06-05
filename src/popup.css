@@ -10,18 +10,8 @@ body {
   font: 14px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-body.embedded {
-  width: 100%;
-  min-width: 0;
-}
-
 main {
   padding: 16px;
-}
-
-body.embedded main {
-  padding: 18px;
-  padding-top: 42px;
 }
 
 h1 {

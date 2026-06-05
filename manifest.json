@@ -34,19 +34,5 @@
       ],
       "run_at": "document_idle"
     }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "src/popup.html",
-        "src/popup.css",
-        "src/popup.js",
-        "src/file_access.js"
-      ],
-      "matches": [
-        "https://chatgpt.com/*",
-        "https://chat.openai.com/*"
-      ]
-    }
   ]
 }
