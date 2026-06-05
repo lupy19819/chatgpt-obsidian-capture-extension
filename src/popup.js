@@ -1,9 +1,8 @@
 const statusEl = document.getElementById("status");
 const detailsEl = document.getElementById("details");
 const buttons = Array.from(document.querySelectorAll("button"));
-const isEmbedded = new URLSearchParams(location.search).get("embedded") === "1";
 
-if (isEmbedded) {
+if (new URLSearchParams(location.search).get("embedded") === "1") {
   document.body.classList.add("embedded");
 }
 
@@ -64,10 +63,6 @@ async function saveWithConfiguredFolder(kind, markSaved) {
   const bundle = await sendToContent("BUILD_EXPORT_BUNDLE");
 
   if (!await access.hasWritableDirectory()) {
-    if (isEmbedded) {
-      await chrome.runtime.openOptionsPage();
-      throw new Error("还没有选择归档文件夹。已打开扩展设置页，请先完成授权。");
-    }
     throw new Error("还没有选择归档文件夹。请先点击“选择归档文件夹”。");
   }
 
@@ -132,11 +127,6 @@ document.getElementById("json").addEventListener("click", () => runFolderExport(
 document.getElementById("choose-folder").addEventListener("click", async () => {
   setBusy(true);
   try {
-    if (isEmbedded) {
-      await chrome.runtime.openOptionsPage();
-      setStatus("已打开扩展设置页，请在设置页选择归档文件夹。");
-      return;
-    }
     const handle = await window.ChatGPTCaptureFileAccess.chooseDirectory();
     setStatus(`归档文件夹已设置：${handle.name}`);
   } catch (error) {
